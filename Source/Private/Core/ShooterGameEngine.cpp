@@ -24,7 +24,10 @@ void FShooterGameEngine::Init()
 {
 	LOG_DEBUG("Game init");
 
-	GameWindow = Engine->GetEngineRender()->CreateWindow<FWindow>(TEXT_CHAR("Game window"), 200, 200, 800, 600);
+	FWindowCreationData WindowCreationData(false);
+	FVector2D<int32> WindowLocation = { 200, 200 };
+	FVector2D<int32> WindowSize = { 800, 600 };
+	GameWindow = GEngine->GetEngineRender()->CreateWindow<FWindow>(WindowCreationData, "Game window", WindowLocation, WindowSize);
 	if (GameWindow != nullptr)
 	{
 		LOG_DEBUG("Init() started: '" << "MakeWidgets()" << "' starting ...");
@@ -34,7 +37,7 @@ void FShooterGameEngine::Init()
 
 		const size_t Nanosecond_End = FUtil::GetNanoSeconds();
 		const size_t Nanosecond_TestDuration = Nanosecond_End - Nanosecond_Start;
-		const std::string ActualTimeString = std::to_string(FUtil::NanoSecondToSecond<float>(Nanosecond_TestDuration));
+		const std::string ActualTimeString = std::to_string(FUtil::NanoSecondToSecond(Nanosecond_TestDuration));
 		LOG_DEBUG("MakeWidgets() duration (nanoseconds): " + ActualTimeString + "s.");
 	}
 }
@@ -71,7 +74,7 @@ void FShooterGameEngine::MakeWidgets()
 	FButtonWidget* StartButtonWidget = VerticalBoxWidget->CreateWidget<FButtonWidget>();
 	FTextWidget* StartTextWidget = StartButtonWidget->CreateWidget<FTextWidget>();
 	StartTextWidget->SetText("Start");
-	StartButtonWidget->OnClickPress.BindLambda([this, VerticalBoxWidget]
+	StartButtonWidget->OnLeftClickRelease.BindLambda([this, VerticalBoxWidget]
 		{
 			LOG_DEBUG("Start requested!");
 
@@ -83,7 +86,7 @@ void FShooterGameEngine::MakeWidgets()
 	FButtonWidget* ExitButtonWidget = VerticalBoxWidget->CreateWidget<FButtonWidget>();
 	FTextWidget* ExitTextWidget = ExitButtonWidget->CreateWidget<FTextWidget>();
 	ExitTextWidget->SetText("Exit");
-	ExitButtonWidget->OnClickPress.BindLambda([this]
+	ExitButtonWidget->OnLeftClickRelease.BindLambda([this]
 		{
 			LOG_DEBUG("Exit requested!");
 
